@@ -154,7 +154,7 @@ const handleViewBlockedUsers = () => {
           )}
           <div className="plasmo-mb-6">
             <h1 className="plasmo-text-2xl plasmo-mb-2 plasmo-flex plasmo-items-center plasmo-justify-center plasmo-gap-2">
-              Welcome to <span className="plasmo-text-blue-500">HS-Saver!</span>
+              Welcome to <span className="plasmo-text-blue-500">SafeDM!</span>
             </h1>
             <p className="plasmo-text-gray-400 plasmo-text-sm plasmo-mb-4 plasmo-flex plasmo-items-center plasmo-justify-center">
               Protect yourself from online harassment
@@ -162,14 +162,62 @@ const handleViewBlockedUsers = () => {
 
             <div className="plasmo-bg-gray-800 plasmo-rounded-lg plasmo-p-4 plasmo-mb-6">
               <div className="plasmo-aspect-video plasmo-bg-gray-700 plasmo-rounded-md plasmo-flex plasmo-items-center plasmo-justify-center plasmo-mb-4">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/t02BFsNE-Ac??rel=0&iv_load_policy=3&modestbranding=1&showinfo=0&controls=0"
+                  title="YouTube video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  className="plasmo-w-full plasmo-h-full plasmo-rounded-md"
+                ></iframe>
+              </div>
+            </div>
+
+            <div className="plasmo-grid plasmo-grid-cols-2 plasmo-gap-3 plasmo-mb-6">
                 <button
-                  className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-900 plasmo-text-white plasmo-px-4 plasmo-py-2 plasmo-rounded-md plasmo-hover:bg-gray-800 plasmo-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg hover:plasmo-bg-gray-700 plasmo-transition-colors disabled:plasmo-opacity-50 disabled:plasmo-cursor-not-allowed"
+                  disabled={!isLoggedIn}
+                  onClick={handleViewReports}
+                >
+                  <FileText className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
+                  <span className="plasmo-text-sm">View Reports</span>
+                </button>
+                <button
+                  className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg hover:plasmo-bg-gray-700 plasmo-transition-colors disabled:plasmo-opacity-50 disabled:plasmo-cursor-not-allowed"
+                  disabled={!isLoggedIn}
+                  onClick={handleViewBlockedUsers}
+                >
+                  <User className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
+                  <span className="plasmo-text-sm">Blocked Users</span>
+                </button>
+                <button
+                  className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg hover:plasmo-bg-gray-700 plasmo-transition-colors disabled:plasmo-opacity-50 disabled:plasmo-cursor-not-allowed"
+                  disabled={!isLoggedIn}
+                  onClick={() => setCurrentPage('messages')}
+                >
+                  <MessageSquare className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
+                  <span className="plasmo-text-sm">Messages Log</span>
+                </button>
+                <button
+                  className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg hover:plasmo-bg-gray-700 plasmo-transition-colors disabled:plasmo-opacity-50 disabled:plasmo-cursor-not-allowed"
                   disabled={!isLoggedIn}
                 >
-                  <span className="plasmo-text-lg">▶</span>
-                  Watch tutorial
+                  <AlertTriangle className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
+                  <span className="plasmo-text-sm">Help Center</span>
                 </button>
-              </div>
+              <button
+                className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg hover:plasmo-bg-gray-700 plasmo-transition-colors disabled:plasmo-opacity-50 disabled:plasmo-cursor-not-allowed"
+                disabled={!isLoggedIn}
+                onClick={() => setCurrentPage('keywords')} 
+              >
+                <PencilOff className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
+                <span className="plasmo-text-sm">Blacklist Keywords</span>
+              </button>
+                <button
+                  className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg hover:plasmo-bg-gray-700 plasmo-transition-colors disabled:plasmo-opacity-50 disabled:plasmo-cursor-not-allowed"
+                  disabled={!isLoggedIn}
+                >
+                  <UserRoundSearch className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
+                  <span className="plasmo-text-sm">All Detected Harrasers</span>
+                </button>
             </div>
 
             <div className="plasmo-space-y-2 plasmo-mb-6">
@@ -204,68 +252,21 @@ const handleViewBlockedUsers = () => {
               />
             </div>
 
-            <div className="plasmo-grid plasmo-grid-cols-2 plasmo-gap-3 plasmo-mb-6">
-            <button
-            className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg plasmo-hover:bg-gray-700 plasmo-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!isLoggedIn}
-            onClick={handleViewReports}
-        >
-            <FileText className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
-            <span className="plasmo-text-sm">View Reports</span>
-        </button>
-               <button
-                className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg plasmo-hover:bg-gray-700 plasmo-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!isLoggedIn}
-                onClick={handleViewBlockedUsers}
-                >
-                <User className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
-                <span className="plasmo-text-sm">Blocked Users</span>
-            </button>
+            <div className="plasmo-flex plasmo-flex-col plasmo-gap-2 plasmo-mt-auto">
               <button
-                className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg plasmo-hover:bg-gray-700 plasmo-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!isLoggedIn}
+                className={`plasmo-flex-1 plasmo-flex plasmo-items-center plasmo-justify-center plasmo-gap-2 plasmo-px-4 plasmo-py-2 plasmo-rounded-md plasmo-transition-colors ${!isLoggedIn || !hasChanges ? 'plasmo-bg-gray-600 plasmo-cursor-not-allowed' : 'plasmo-bg-blue-600 plasmo-hover:bg-blue-700'}`}
+                disabled={!isLoggedIn || !hasChanges}
+                onClick={handleSavePreferences}
               >
-                <MessageSquare className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
-                <span className="plasmo-text-sm">Messages Log</span>
+                <Shield className="plasmo-w-4 plasmo-h-4" />
+                Save Preferences
               </button>
-              <button
-                className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg plasmo-hover:bg-gray-700 plasmo-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!isLoggedIn}
-              >
-                <AlertTriangle className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
-                <span className="plasmo-text-sm">Help Center</span>
-              </button>
-              <button
-                className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg plasmo-hover:bg-gray-700 plasmo-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!isLoggedIn}
-              >
-                <PencilOff className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
-                <span className="plasmo-text-sm">Blacklist Keywords</span>
-              </button>
-              <button
-                className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-bg-gray-800 plasmo-p-3 plasmo-rounded-lg plasmo-hover:bg-gray-700 plasmo-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!isLoggedIn}
-              >
-                <UserRoundSearch className="plasmo-w-5 plasmo-h-5 plasmo-text-blue-500" />
-                <span className="plasmo-text-sm">All Detected Harrasers</span>
-              </button>
+              {showWarning && (
+                <p className="plasmo-text-xs plasmo-text-yellow-400">
+                  Please save your changes to see them in action.
+                </p>
+              )}
             </div>
-          </div>
-
-          <div className="plasmo-flex plasmo-flex-col plasmo-gap-2 plasmo-mt-auto">
-            <button
-              className={`plasmo-flex-1 plasmo-flex plasmo-items-center plasmo-justify-center plasmo-gap-2 plasmo-px-4 plasmo-py-2 plasmo-rounded-md plasmo-transition-colors ${!isLoggedIn || !hasChanges ? 'plasmo-bg-gray-600 plasmo-cursor-not-allowed' : 'plasmo-bg-blue-600 plasmo-hover:bg-blue-700'}`}
-              disabled={!isLoggedIn || !hasChanges}
-              onClick={handleSavePreferences}
-            >
-              <Shield className="plasmo-w-4 plasmo-h-4" />
-              Save Preferences
-            </button>
-            {showWarning && (
-              <p className="plasmo-text-xs plasmo-text-yellow-400">
-                Please save your changes to see them in action.
-              </p>
-            )}
           </div>
         </>
       )}

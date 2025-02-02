@@ -1,12 +1,13 @@
 import React from 'react';
-import { Home, BarChart2, List, Settings2 } from 'lucide-react';
+import { Home, BarChart2, List, Settings2, MessageSquare, Hash } from 'lucide-react';
 import { useNavigation } from '../popupui';
 
 const navigationItems = [
     { id: 'home', icon: Home, label: 'Home' },
+    { id: 'messages', icon: MessageSquare, label: 'Messages' },
     { id: 'reports', icon: BarChart2, label: 'Reports' },
     { id: 'blocked', icon: List, label: 'Blocked' },
-    { id: 'settings', icon: Settings2, label: 'Settings' }
+    { id: 'keywords', icon: Hash, label: 'Keywords' } 
 ];
 
 const NavigationBar = () => {

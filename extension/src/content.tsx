@@ -588,8 +588,7 @@ const injectProfileTag = async () => {
       console.log("Profile header element not found");
       return;
     }
-
-    // Get profile name from aria-label
+    
     const aTag = profileHeader.querySelector('a[aria-label]');
     console.log("a tag", aTag);
     if (!aTag) {
@@ -606,13 +605,14 @@ const injectProfileTag = async () => {
 
     // // Call backend API
     const response = await fetch(
-      `/api/v1/user/check-harasser?name=${name}&profileUrl=${trimmedUrl}}`
+      `http://localhost:3001/api/v1/user/check-dummy-harasser`
     );
 
     if (!response.ok) throw new Error(`HTTP error! ${response.status}`);
 
     const { isHarasser } = await response.json();
-
+    console.log("harr",isHarasser);
+    
     // Only inject tag if user is a harasser
     if (isHarasser) {
       const existingTag = document.getElementById('profile-tag');

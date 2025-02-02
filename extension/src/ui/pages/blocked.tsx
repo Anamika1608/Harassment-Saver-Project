@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { User, ExternalLink, Loader2, MessageSquare } from 'lucide-react';
 import { isAuthenticated, getToken } from '../../utils/auth';
+import { useNavigation } from '../popupui';
 
 const BlockedPage = () => {
   const [hiddenUsers, setHiddenUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [stats, setStats] = useState({ totalHiddenUsers: 0, totalHiddenMessages: 0 });
+  const { setCurrentPage } = useNavigation();
 
   useEffect(() => {
     const fetchHiddenUsers = async () => {
@@ -22,10 +24,10 @@ const BlockedPage = () => {
           const data = await response.json();
           
           if (data.status === 'success') {
-            setHiddenUsers(data.data.hiddenUsers);
+            setHiddenUsers(data.data.hiddenUsers || []);
             setStats({
-              totalHiddenUsers: data.data.totalHiddenUsers,
-              totalHiddenMessages: data.data.totalHiddenMessages
+              totalHiddenUsers: data.data.hiddenUsers?.length || 0,
+              totalHiddenMessages: data.data.totalHiddenMessages || 0
             });
           } else {
             setError('Failed to fetch hidden users');
@@ -50,10 +52,14 @@ const BlockedPage = () => {
     });
   };
 
-  const handleViewProfile = (profileUrl:any) => {
+  const handleViewProfile = (profileUrl) => {
     if (profileUrl) {
       chrome.tabs.create({ url: profileUrl });
     }
+  };
+
+  const handleViewMessages = () => {
+    setCurrentPage('messages');
   };
 
   if (loading) {
@@ -66,7 +72,7 @@ const BlockedPage = () => {
 
   if (error) {
     return (
-      <div className="plasmo-p-4 plasmo-text-center">
+      <div className="plasmo-p-4 plasmo-text-center" style={{ userSelect: 'none' }}>
         <div className="plasmo-text-red-400 plasmo-mb-4">{error}</div>
         {error === 'Please log in to view hidden users' && (
           <button
@@ -81,7 +87,7 @@ const BlockedPage = () => {
   }
 
   return (
-    <div className="plasmo-p-4">
+    <div className="plasmo-p-4" style={{ userSelect: 'none' }}>
       <div className="plasmo-flex plasmo-justify-between plasmo-items-center plasmo-mb-6">
         <h2 className="plasmo-text-xl plasmo-font-semibold">Hidden Users</h2>
         <button
@@ -96,11 +102,17 @@ const BlockedPage = () => {
       <div className="plasmo-bg-gray-800/50 plasmo-rounded-lg plasmo-p-3 plasmo-mb-4 plasmo-flex plasmo-justify-between">
         <div>
           <div className="plasmo-text-sm plasmo-text-gray-400">Total Hidden</div>
-          <div className="plasmo-text-lg plasmo-font-semibold">{stats.totalHiddenUsers} users</div>
+          <div className="plasmo-text-lg plasmo-font-semibold">{stats.totalHiddenUsers || 0} users</div>
         </div>
-        <div>
+        <div 
+          className="plasmo-cursor-pointer hover:plasmo-opacity-80"
+          onClick={handleViewMessages}
+        >
           <div className="plasmo-text-sm plasmo-text-gray-400">Messages Hidden</div>
-          <div className="plasmo-text-lg plasmo-font-semibold">{stats.totalHiddenMessages}</div>
+          <div className="plasmo-text-lg plasmo-font-semibold plasmo-flex plasmo-items-center plasmo-gap-2">
+            {stats.totalHiddenMessages || 0}
+            <MessageSquare className="plasmo-w-4 plasmo-h-4 plasmo-text-blue-500" />
+          </div>
         </div>
       </div>
 
@@ -134,11 +146,19 @@ const BlockedPage = () => {
                 </div>
                 
                 <div className="plasmo-flex-1">
-                  <div className="plasmo-font-medium plasmo-mb-1">{user.name}</div>
+                  <a 
+                    href={user.profileUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="plasmo-font-medium plasmo-mb-1 plasmo-text-blue-500 plasmo-hover:underline"
+                  >
+                    {user.name}
+                  </a>
                   <div className="plasmo-flex plasmo-items-center plasmo-gap-2 plasmo-text-sm plasmo-text-gray-400">
                     <MessageSquare className="plasmo-w-4 plasmo-h-4" />
-                    <span>{user.totalMessagesHidden} messages hidden</span>
+                    <span>{user.totalMessagesHidden || 0} messages hidden</span>
                   </div>
+                  <div className="plasmo-text-xs plasmo-text-gray-500">Platform: {user.platform}</div>
                 </div>
               </div>
 

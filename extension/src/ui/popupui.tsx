@@ -8,6 +8,8 @@ import NavigationBar from './components/navigation-bar';
 import { isAuthenticated } from '../utils/auth';
 import ProfileSection from './components/profile-dropdown';
 import { createContext } from 'react';
+import MessagesPage from './pages/messages';
+import KeywordsPage from './pages/keywords';
 
 
 const NavigationContext = createContext({
@@ -37,6 +39,10 @@ const PopupUI = () => {
                 return <ReportsPage />;
             case 'blocked':
                 return <BlockedPage />;
+            case 'messages':
+                return <MessagesPage />;
+            case 'keywords':
+                return <KeywordsPage />;
             case 'home':
             default:
                 return <HomePage />;
@@ -84,7 +90,7 @@ const Header = () => {
                     <div className="plasmo-w-8 plasmo-h-8 plasmo-bg-blue-600 plasmo-rounded-lg plasmo-flex plasmo-items-center plasmo-justify-center">
                         <Shield className="plasmo-w-5 plasmo-h-5" />
                     </div>
-                    <span className="plasmo-text-lg plasmo-font-medium">HS-Saver</span>
+                    <span className="plasmo-text-lg plasmo-font-medium">SafeDM</span>
                 </div>
                 <div className="plasmo-flex plasmo-items-center plasmo-gap-2">
                     <ProfileSection />
