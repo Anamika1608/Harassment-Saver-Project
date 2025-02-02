@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const { z } = require('zod');
@@ -16,7 +17,8 @@ const HARASSER_THRESHOLD = 5;
 
 router.use("/",profileRoutes)
 
-router.post('/hide-user', authMiddleware, async (req, res) => {//-> {name: string, userId: "", platform: ""} // userId will be used to correctly identify user to hide
+//-> {name: string, userId: "", platform: ""} // userId will be used to correctly identify user to hide
+router.post('/hide-user', authMiddleware, async (req, res) => {
   try {
     const { name, userId, platform, profileUrl } = req.body;
     
@@ -581,94 +583,111 @@ const hideMessageSchema = z.object({
   }).optional()
 });
 
+
+async function findOrCreateHiddenUser(userData, userId) {
+  let hiddenUser = await HiddenUser.findOne({
+      name: userData.userName,
+      profileUrl: userData.profileUrl,
+      hiddenBy: userId
+  });
+
+  if (!hiddenUser) {
+      hiddenUser = await HiddenUser.create({
+          name: userData.userName,
+          profileUrl: userData.profileUrl,
+          hiddenBy: userId,
+          platform: userData.platform || 'unknown',
+          reason: userData.reason,
+          'metadata.lastKnownActivity': new Date(),
+          'metadata.associatedPlatforms': [userData.platform || 'unknown']
+      });
+
+      await User.findByIdAndUpdate(
+          userId,
+          { $push: { hiddenUsers: hiddenUser._id } }
+      );
+  }
+
+  return hiddenUser;
+}
+
 router.post('/hide-message', authMiddleware, async (req, res) => {
   try {
-    const validatedData = await hideMessageSchema.parseAsync(req.body);
- 
-    const existingMessage = await HiddenMessage.findOne({
-      messageContent: validatedData.messageContent,
-      userName: validatedData.userName,
-      profileUrl: validatedData.profileUrl,
-      hiddenBy: req.userId,
-      platform: validatedData.platform || 'unknown'
-    });
+      const validatedData = await hideMessageSchema.parseAsync(req.body);
 
-    if (existingMessage) {
-      return res.status(409).json({
-        status: 'error',
-        type: 'DuplicateError',
-        message: 'This message has already been hidden',
-        data: {
-          existingMessage: {
-            id: existingMessage._id,
-            hiddenAt: existingMessage.createdAt
+      const existingMessage = await HiddenMessage.findOne({
+          messageContent: validatedData.messageContent,
+          userName: validatedData.userName,
+          profileUrl: validatedData.profileUrl,
+          hiddenBy: req.userId,
+          platform: validatedData.platform || 'unknown'
+      });
+
+      if (existingMessage) {
+          return res.status(409).json({
+              status: 'error',
+              type: 'DuplicateError',
+              message: 'This message has already been hidden'
+          });
+      }
+
+      const hiddenUser = await findOrCreateHiddenUser(validatedData, req.userId);
+
+      const hiddenMessage = await HiddenMessage.create({
+          ...validatedData,
+          timeOfMessage: new Date(validatedData.timeOfMessage),
+          hiddenBy: req.userId,
+          relatedHiddenUser: hiddenUser._id
+      });
+
+      await User.findByIdAndUpdate(
+          req.userId,
+          {
+              $inc: { totalBlockedMessages: 1 },
+              $push: { hiddenMessages: hiddenMessage._id }
           }
-        }
-      });
-    }
+      );
 
-    let relatedHiddenUser = await HiddenUser.findOne({
-      name: validatedData.userName,
-      profileUrl: validatedData.profileUrl,
-      hiddenBy: req.userId
-    });
-
-    if (!relatedHiddenUser) {
-      relatedHiddenUser = await HiddenUser.create({
-        name: validatedData.userName,
-        profileUrl: validatedData.profileUrl,
-        hiddenBy: req.userId,
-        platform: validatedData.platform || 'unknown',
-        reason: validatedData.reason || 'No reason specified'
-      });
-    }
-
-    const hiddenMessage = await HiddenMessage.create({
-      ...validatedData,
-      timeOfMessage: new Date(validatedData.timeOfMessage),
-      hiddenBy: req.userId,
-      relatedHiddenUser: relatedHiddenUser._id
-    });
-
-    await User.findByIdAndUpdate(
-      req.userId,
-      {
-        $inc: { totalBlockedMessages: 1 },
-        $push: { hiddenMessages: hiddenMessage._id }
-      }
-    );
-
-    const updateData = {
-      $push: { hiddenMessages: hiddenMessage._id },
-      $inc: { 'statistics.totalMessagesHidden': 1 },
-      'statistics.lastMessageHidden': new Date()
-    };
-
-    if (!relatedHiddenUser.statistics?.firstMessageHidden) {
-      updateData['statistics.firstMessageHidden'] = new Date();
-    }
-
-    await HiddenUser.findByIdAndUpdate(relatedHiddenUser._id, updateData);
-
-    res.status(201).json({
-      status: 'success',
-      data: {
-        hiddenMessage: {
-          id: hiddenMessage._id,
-          userName: hiddenMessage.userName,
-          messageContent: hiddenMessage.messageContent,
-          timeOfMessage: hiddenMessage.timeOfMessage,
-          platform: hiddenMessage.platform,
-          metadata: hiddenMessage.metadata,
-          relatedHiddenUser: {
-            id: relatedHiddenUser._id,
-            name: relatedHiddenUser.name
+      const messageType = validatedData.metadata?.messageType || 'text';
+      await HiddenUser.findByIdAndUpdate(
+          hiddenUser._id,
+          {
+              $push: { hiddenMessages: hiddenMessage._id },
+              $inc: {
+                  'statistics.totalMessagesHidden': 1,
+                  [`statistics.messageTypes.${messageType}`]: 1
+              },
+              $set: {
+                  'statistics.lastMessageHidden': new Date(),
+                  'metadata.lastKnownActivity': new Date(validatedData.timeOfMessage)
+              },
+              $setOnInsert: {
+                  'statistics.firstMessageHidden': new Date()
+              }
           },
-          createdAt: hiddenMessage.createdAt
-        }
-      }
-    });
-  } catch (error) {
+          { new: true }
+      );
+
+      res.status(201).json({
+          status: 'success',
+          data: {
+              hiddenMessage: {
+                  id: hiddenMessage._id,
+                  userName: hiddenMessage.userName,
+                  messageContent: hiddenMessage.messageContent,
+                  timeOfMessage: hiddenMessage.timeOfMessage,
+                  platform: hiddenMessage.platform,
+                  metadata: hiddenMessage.metadata,
+                  relatedHiddenUser: {
+                      id: hiddenUser._id,
+                      name: hiddenUser.name,
+                      statistics: hiddenUser.statistics
+                  }
+              }
+          }
+      });
+
+  }  catch (error) {
     if (error.code === 11000) {
       return res.status(409).json({
         status: 'error',
@@ -700,82 +719,92 @@ router.post('/hide-message', authMiddleware, async (req, res) => {
 
 router.get('/hidden-messages', authMiddleware, async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 20,
-      userName,
-      platform,
-      startDate,
-      endDate,
-      sortBy = 'createdAt',
-      sortOrder = 'desc'
-    } = req.query;
+      const {
+          page = 1,
+          limit = 20,
+          userName,
+          platform,
+          startDate,
+          endDate,
+          messageType,
+          sortBy = 'timeOfMessage',
+          sortOrder = 'desc'
+      } = req.query;
 
-    const query = {
-      hiddenBy: req.userId
-    };
+      const pipeline = [
+          { $match: { hiddenBy: new mongoose.Types.ObjectId(req.userId) } },
+          {
+              $lookup: {
+                  from: 'hiddenusers',
+                  localField: 'relatedHiddenUser',
+                  foreignField: '_id',
+                  as: 'userDetails'
+              }
+          },
+          { $unwind: '$userDetails' }
+      ];
 
-    if (userName) {
-      query.userName = { $regex: new RegExp(userName, 'i') };
-    }
-
-    if (platform) {
-      query.platform = platform;
-    }
-
-    if (startDate || endDate) {
-      query.timeOfMessage = {};
-      if (startDate) {
-        query.timeOfMessage.$gte = new Date(startDate);
+      if (userName) {
+          pipeline.push({
+              $match: { userName: { $regex: new RegExp(userName, 'i') } }
+          });
       }
-      if (endDate) {
-        query.timeOfMessage.$lte = new Date(endDate);
+
+      if (platform) {
+          pipeline.push({ $match: { platform } });
       }
-    }
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    const sortDirection = sortOrder.toLowerCase() === 'asc' ? 1 : -1;
-
-    const [messages, totalCount] = await Promise.all([
-      HiddenMessage.find(query)
-        .sort({ [sortBy]: sortDirection })
-        .skip(skip)
-        .limit(parseInt(limit))
-        .populate({
-          path: 'relatedHiddenUser',
-          select: 'name profileUrl statistics'
-        }),
-      HiddenMessage.countDocuments(query)
-    ]);
-
-    const formattedMessages = messages.map(message => ({
-      id: message._id,
-      userName: message.userName,
-      messageContent: message.messageContent,
-      timeOfMessage: message.timeOfMessage,
-      platform: message.platform,
-      metadata: message.metadata,
-      createdAt: message.createdAt,
-      relatedHiddenUser: message.relatedHiddenUser ? {
-        id: message.relatedHiddenUser._id,
-        name: message.relatedHiddenUser.name,
-        profileUrl: message.relatedHiddenUser.profileUrl,
-        statistics: message.relatedHiddenUser.statistics
-      } : null
-    }));
-
-    res.status(200).json({
-      status: 'success',
-      data: {
-        messages: formattedMessages,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(totalCount / parseInt(limit)),
-          totalItems: totalCount,
-          itemsPerPage: parseInt(limit)
-        }
+      if (messageType) {
+          pipeline.push({
+              $match: { 'metadata.messageType': messageType }
+          });
       }
-    });
+
+      if (startDate || endDate) {
+          const dateFilter = {};
+          if (startDate) dateFilter.$gte = new Date(startDate);
+          if (endDate) dateFilter.$lte = new Date(endDate);
+          pipeline.push({ $match: { timeOfMessage: dateFilter } });
+      }
+
+      const totalCount = await HiddenMessage.aggregate([
+          ...pipeline,
+          { $count: 'total' }
+      ]);
+
+      pipeline.push(
+          { $sort: { [sortBy]: sortOrder === 'desc' ? -1 : 1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit }
+      );
+
+      const messages = await HiddenMessage.aggregate(pipeline);
+
+      res.status(200).json({
+          status: 'success',
+          data: {
+              messages: messages.map(msg => ({
+                  id: msg._id,
+                  userName: msg.userName,
+                  messageContent: msg.messageContent,
+                  timeOfMessage: msg.timeOfMessage,
+                  platform: msg.platform,
+                  metadata: msg.metadata,
+                  relatedHiddenUser: {
+                      id: msg.userDetails._id,
+                      name: msg.userDetails.name,
+                      statistics: msg.userDetails.statistics
+                  }
+              })),
+              pagination: {
+                  currentPage: parseInt(page),
+                  totalPages: Math.ceil((totalCount[0]?.total || 0) / limit),
+                  totalItems: totalCount[0]?.total || 0,
+                  itemsPerPage: limit
+              }
+          }
+      });
+
   } catch (error) {
     console.error('Fetch hidden messages error:', error);
     res.status(500).json({
