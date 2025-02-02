@@ -29,7 +29,7 @@ const Navbar = () => {
           </div>
 
           
-          <a href="https://dashboard-azure-one.vercel.app/auth/sign-in" className="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition-colors">
+          <a href="http://localhost:3000/auth/sign-in" className="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition-colors">
             Sign in
           </a>
         </div>

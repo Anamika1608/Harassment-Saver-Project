@@ -878,6 +878,16 @@ router.get('/check-harasser', async (req, res) => {
   }
 });
 
+router.get('/check-dummy-harasser', async (req, res) => {
+
+    res.json({
+      status: 'success',
+      data: {
+        isHarasser: true
+      }
+})
+});
+
 //maybe we can use this on dashboard 
 router.get('/known-harassers', authMiddleware, async (req, res) => {
   try {

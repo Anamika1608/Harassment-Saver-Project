@@ -1,7 +1,7 @@
 import type { PlasmoContentScript } from "plasmo"
 
 export const config: PlasmoContentScript = {
-  matches: ["https://dashboard-azure-one.vercel.app/*"],
+  matches: ["http://localhost:3000/*"],
   all_frames: true,
   run_at: "document_end"
 }

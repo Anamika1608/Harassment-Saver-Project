@@ -1,4 +1,5 @@
-const host = "dashboard-azure-one.vercel.app"
+// const host = "dashboard-azure-one.vercel.app"
+const host = "localhost:3000"
 
 chrome.runtime.onInstalled.addListener((details) => {
     console.log("🟦 Extension installed:", details.reason)
@@ -22,7 +23,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             case "initiateLogin":
                 console.log("🟦 Initiating login...")
                 chrome.tabs.create({
-                    url: `https://${host}/auth/sign-in?source=extension`
+                    url: `http://${host}/auth/sign-in?source=extension`
                 }, (tab) => {
                     console.log("🟦 Login tab created:", tab?.id)
                     if (sendResponse) {
