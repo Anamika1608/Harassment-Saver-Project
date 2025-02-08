@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import type { PlasmoCSConfig } from "plasmo"
 import { sendToBackground } from "@plasmohq/messaging"
-import { initMessageDetection } from "~hooks/initMsgDetection"
+import { initMessageDetection } from "~hooks/initMessageDetection"
 import { getToken } from "~utils/auth"
 
 let areMessagesHidden = true

@@ -53,10 +53,10 @@ const PopupUI = () => {
         <NavigationContext.Provider value={{ currentPage, setCurrentPage }}>
             <div className="plasmo-w-[320px] plasmo-h-[480px] plasmo-bg-gray-900 plasmo-text-white plasmo-font-sans plasmo-flex plasmo-flex-col">
                 <Header />
-                <div className="plasmo-flex-1 plasmo-overflow-auto plasmo-pb-16">
+                <div className="plasmo-flex-1 plasmo-overflow-auto plasmo-pb-16 no-scrollbar plasmo-overflow-y-auto">
                     {renderPage()}
                 </div>
-                <NavigationBar />
+                <NavigationBar/>
             </div>
         </NavigationContext.Provider>
     );
