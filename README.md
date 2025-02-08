@@ -73,7 +73,6 @@ View saved messages, blocked users, blocked keywords, generated reports, and mod
 
 ![Screenshot 3](extension/assets/screenshots/harasser_tag.png)  
 
-![Screenshot 4](extension/assets/screenshots/popup_inbox.png)  
 
 ### 📊 EXTENSION POPUP - STATS OVERVIEW
 
