@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const hiddenMessageSchema = new mongoose.Schema({
   messageContent: { type: String, required: true },
-  timeOfMessage: { type: Date, required: true },
+  timeOfMessage: { type: String, required: true },
   userName: { type: String, required: true },
   profileUrl: { type: String, required: true },
   platform: { type: String, default: 'unknown' },

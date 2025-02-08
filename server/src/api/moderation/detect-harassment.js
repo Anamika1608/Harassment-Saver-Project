@@ -4,18 +4,11 @@ const router = express.Router();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// route: "/api/v1/moderation/detect-harassment" -> payload: {username: "", message: "", platform: ""}
+// route: "/api/v1/moderation/detect-harassment" -> payload: { message: "", platform: ""}
 
 router.post('/detect-harassment', async (req, res) => {
   try {
-    const { username, message, platform } = req.body;
-
-    if (!username || typeof username !== 'string' || username.trim() === '') {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Invalid or missing username'
-      });
-    }
+    const { message, platform } = req.body;
 
     if (!message || typeof message !== 'string' || message.trim() === '') {
       return res.status(400).json({
