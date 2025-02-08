@@ -35,7 +35,8 @@
     "host_permissions": [
       "https://www.linkedin.com/*",
       "https://www.instagram.com/*",
-      "http://localhost:3000/*"
+      "http://localhost:3000/*",
+      "https://harassment-saver-extension.onrender.com/*"
     ],
     "permissions": [
       "scripting",
@@ -46,3 +47,4 @@
     ]
   }
 }
+
