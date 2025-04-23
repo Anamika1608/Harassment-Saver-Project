@@ -1,6 +1,10 @@
-# 🚀 Harassment Message Detection Extension
+# 🚀 Harassment Saver Extension
 
 This browser extension detects and hides harassment messages to create a safer online experience for professional platforms like LinkedIn.
+
+## 🎥 Demo Video (click to play)
+
+[![Watch the demo](extension/assets/screenshots/client_ui.png)](https://vimeo.com/1059208124)
 
 
 ## Features
@@ -49,9 +53,6 @@ View saved messages, blocked users, blocked keywords, generated reports, and mod
 
 ![Screenshot 9](extension/assets/screenshots/popup_ui_preferences.png)  
 
-### 🌐 WEBSITE INTERFACE
-
-![Screenshot 10](extension/assets/screenshots/client_ui.png)  
 
 ---
 
