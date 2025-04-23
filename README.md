@@ -2,7 +2,6 @@
 
 This browser extension detects and hides harassment messages to create a safer online experience for professional platforms like LinkedIn.
 
----
 
 ## Features
 
@@ -25,6 +24,37 @@ Automatically tags users if blocked by more than 5 users.
 View saved messages, blocked users, blocked keywords, generated reports, and modify extension preferences effortlessly.
 
 ---
+
+
+## Screenshots
+
+### UI MODIFICATION BY EXTENSION
+
+![Screenshot 1](extension/assets/screenshots/login_to_save.png)  
+
+![Screenshot 2](extension/assets/screenshots/popup_inbox.png)  
+
+![Screenshot 3](extension/assets/screenshots/harasser_tag.png)  
+
+
+### 📊 EXTENSION POPUP - STATS OVERVIEW
+
+![Screenshot 5](extension/assets/screenshots/popup_ui.png)  
+
+![Screenshot 6](extension/assets/screenshots/popup_ui_msg.png)  
+
+![Screenshot 7](extension/assets/screenshots/popup_ui_blocked.png)  
+
+![Screenshot 8](extension/assets/screenshots/popup_ui_keywords.png)  
+
+![Screenshot 9](extension/assets/screenshots/popup_ui_preferences.png)  
+
+### 🌐 WEBSITE INTERFACE
+
+![Screenshot 10](extension/assets/screenshots/client_ui.png)  
+
+---
+
 
 ## 🛠 Installation
 
@@ -62,36 +92,6 @@ View saved messages, blocked users, blocked keywords, generated reports, and mod
    ```
 
 ---
-
-## Screenshots
-
-### UI MODIFICATION BY EXTENSION
-
-![Screenshot 1](extension/assets/screenshots/login_to_save.png)  
-
-![Screenshot 2](extension/assets/screenshots/popup_inbox.png)  
-
-![Screenshot 3](extension/assets/screenshots/harasser_tag.png)  
-
-
-### 📊 EXTENSION POPUP - STATS OVERVIEW
-
-![Screenshot 5](extension/assets/screenshots/popup_ui.png)  
-
-![Screenshot 6](extension/assets/screenshots/popup_ui_msg.png)  
-
-![Screenshot 7](extension/assets/screenshots/popup_ui_blocked.png)  
-
-![Screenshot 8](extension/assets/screenshots/popup_ui_keywords.png)  
-
-![Screenshot 9](extension/assets/screenshots/popup_ui_preferences.png)  
-
-### 🌐 WEBSITE INTERFACE
-
-![Screenshot 10](extension/assets/screenshots/client_ui.png)  
-
----
-
 ## 🚀 Usage
 
 1️⃣ **Install the extension following the steps above.**  
