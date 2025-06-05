@@ -4,7 +4,7 @@ This browser extension detects and hides harassment messages to create a safer o
 
 ## 🎥 Demo Video (click to play)
 
-[![Watch the demo](extension/assets/screenshots/client_ui.png)](https://vimeo.com/1059208124)
+[![Watch the demo](extension/assets/screenshots/client-updated-ui.png)](https://vimeo.com/1059208124)
 
 
 ## Features
@@ -101,9 +101,4 @@ View saved messages, blocked users, blocked keywords, generated reports, and mod
 
 3️⃣ **Users can manually review hidden messages if needed.**  
 
----
-
-## 🐜 License
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
